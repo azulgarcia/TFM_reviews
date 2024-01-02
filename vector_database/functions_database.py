@@ -63,3 +63,11 @@ def get_all_reviews(client, collection):
 
     return df
 
+def get_all_reviews_2(client, collection):
+    search_result = client.search(
+        collection_name=collection,
+        query_vector=[0.0] * 384,
+        limit=20,
+    )
+
+    return search_result
