@@ -1,19 +1,53 @@
 from transformers import MarianMTModel, MarianTokenizer
-import streamlit as st
-def translate_text(answer):
-    modelo = MarianMTModel.from_pretrained("Helsinki-NLP/opus-mt-es-en")
-    tokenizador = MarianTokenizer.from_pretrained("Helsinki-NLP/opus-mt-es-en")
 
-    entrada = tokenizador(answer, return_tensors="pt")
-    traduccion_ids = modelo.generate(**entrada)
-    traduccion_texto = tokenizador.batch_decode(traduccion_ids, skip_special_tokens=True)[0]
+def translate_text_en(answer):
+    model_name = "Helsinki-NLP/opus-mt-es-en"
+    model = MarianMTModel.from_pretrained(model_name)
+    tokenizador = MarianTokenizer.from_pretrained(model_name)
+
+    input = tokenizador(answer, return_tensors="pt")
+    translate_ids = model.generate(**input)
+    translate_text = tokenizador.batch_decode(translate_ids, skip_special_tokens=True)[0]
 
     # Imprimir la traducción
-    print(f"Texto original (español): {answer}")
-    print(f"Traducción (inglés): {traduccion_texto}")
+    print(f"Original text (spanish): {answer}")
+    print(f"Translate (english): {translate_text}")
 
-    return traduccion_texto
+    return translate_text
 
 
-#answer = "Lamentamos escuchar que tu experiencia no estuvo a la altura de tus expectativas. Valoramos tu retroalimentación y trabajaremos arduamente para mejorar."
-#translate_text(answer)
+def translate_text_fr(answer):
+    model_name = "Helsinki-NLP/opus-mt-es-fr"
+    model = MarianMTModel.from_pretrained(model_name)
+    tokenizador = MarianTokenizer.from_pretrained(model_name)
+
+    input = tokenizador(answer, return_tensors="pt")
+    translate_ids = model.generate(**input)
+    translate_text = tokenizador.batch_decode(translate_ids, skip_special_tokens=True)[0]
+
+    # Imprimir la traducción
+    print(f"Original text (spanish): {answer}")
+    print(f"Translate (french): {translate_text}")
+
+    return translate_text
+
+def translate_text_de(answer):
+    model_name = "Helsinki-NLP/opus-mt-es-de"
+    model = MarianMTModel.from_pretrained(model_name)
+    tokenizador = MarianTokenizer.from_pretrained(model_name)
+
+    input = tokenizador(answer, return_tensors="pt")
+    translate_ids = model.generate(**input)
+    translate_text = tokenizador.batch_decode(translate_ids, skip_special_tokens=True)[0]
+
+    # Imprimir la traducción
+    print(f"Original text (spanish): {answer}")
+    print(f"Translate (german): {translate_text}")
+
+    return translate_text
+
+#Test
+answer = "Lamentamos escuchar que tu experiencia no estuvo a la altura de tus expectativas. Valoramos tu retroalimentación y trabajaremos arduamente para mejorar."
+translate_text_en(answer)
+translate_text_fr(answer)
+translate_text_de(answer)

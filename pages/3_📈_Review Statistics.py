@@ -9,7 +9,7 @@ def main():
         - chek dates
     """)
 
-    qdrant_client= connect_to_qdrant()
+    qdrant_client = connect_to_qdrant()
     collection_name = "reviews"
     df_reviews = get_all_reviews(qdrant_client, collection_name)
 
@@ -48,6 +48,8 @@ def main():
 
     negative_reviews = filtered_reviews[(filtered_reviews['score'] == 1) | (filtered_reviews['score'] == 2)].shape[0]
 
+    neutral_reviews = filtered_reviews[(filtered_reviews['score'] == 3)].shape[0]
+
     total_reviews = filtered_reviews.shape[0]
 
     average_score = (positive_reviews - negative_reviews) / total_reviews * 100
@@ -57,11 +59,13 @@ def main():
       <tr>
         <th>Total reviews</th>
         <th>Positive</th>
+        <th>Neutral</th>
         <th>Negative</th>
       </tr>
       <tr>
         <td>{total_reviews}</td>
         <td>{positive_reviews}</td>
+        <td>{neutral_reviews}</td>
         <td>{negative_reviews}</td>
       </tr>
     </table>

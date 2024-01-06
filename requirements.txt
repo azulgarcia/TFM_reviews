@@ -3,3 +3,6 @@ selenium
 pandas
 
 pip install transformers datasets evaluate sacrebleu
+
+pip install sacremoses
+

@@ -1,6 +1,8 @@
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
 import pandas as pd
+from sentence_transformers import SentenceTransformer
+
 
 def connect_to_qdrant():
 
@@ -33,6 +35,28 @@ def upsert_qdrant(qdrant_client,collection_name, df):
 
     return print("Number of answers", qdrant_client.count(collection_name=collection_name))
 
+def upsert_reviews(client, collection, df):
+
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+
+    reviews = df['body'].tolist()
+    df["encoded"] = model.encode(reviews).tolist()
+
+    payload = df.to_dict(orient="records")
+
+    client.upsert(
+        collection_name=collection,
+        points=[
+            PointStruct(
+                id=idx,
+                vector=row['encoded'],
+                payload=payload[idx]
+            )
+            for idx, row in df.iterrows()
+        ]
+    )
+
+
 def search_reviews(client, collection, query_vector):
 
     search_result = client.search(
@@ -43,12 +67,11 @@ def search_reviews(client, collection, query_vector):
 
 
 def get_all_reviews(client, collection):
-#    client = QdrantClient(":memory:")
- #   collection_name = "reviews"
 
     search_result = client.search(
         collection_name=collection,
         query_vector=[0.0] * 384,
+        limit=100
     )
 
     print(search_result)
