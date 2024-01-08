@@ -1,3 +1,4 @@
+import pandas as pd
 from langchain import OpenAI
 from langchain.chains.qa_with_sources import load_qa_with_sources_chain
 from langchain.schema import Document
@@ -23,27 +24,21 @@ def get_answer_review(review):
     res = chain({"question": query, "input_documents": [document]})
     return res["output_text"]
 
-'''
 # test
 # read a single review
-df = pd.read_csv('/get_reviews/data/reviews_tripadvisor.csv')
-single_review = df['body'][0]  
+df = pd.read_csv('C:/Users/Azul/Desktop/TFM/TFM_reviews/get_reviews/data/reviews_tripadvisor.csv')
+single_review = df['body'][7]
 
-# document from the review
 document = get_doc_from_text(single_review)
 
-# chain of questions and answers
 chain = load_qa_with_sources_chain(llm=llm)
 
-# ask
-query = "¿Puedes proporcionar una respuesta sugerida para que el dueño del restaurante pueda responder de manera efectiva a la reseña en TripAdvisor? Ten en cuenta que la respuesta debe ser profesional, agradecida y abordar cualquier problema mencionado en la reseña de manera proactiva."
+query = "¿Puedes proporcionar una respuesta sugerida para que el dueño del restaurante pueda responder de manera efectiva a " \
+        "la reseña en TripAdvisor? Ten en cuenta que la respuesta debe ser profesional, agradecida y abordar cualquier problema " \
+        "mencionado en la reseña de manera proactiva."
 
-# answer for the only review
 res = chain({"question": query, "input_documents": [document]})
-
-print(res)
 
 print("Respuesta para la reseña:", res["output_text"])
 print("Reseña:", single_review)
 print("Pregunta:", query)
-'''

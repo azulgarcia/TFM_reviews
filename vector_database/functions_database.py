@@ -74,8 +74,6 @@ def get_all_reviews(client, collection):
         limit=100
     )
 
-    print(search_result)
-
     metadata = []
 
     for scored_point in search_result:
@@ -90,7 +88,7 @@ def get_all_reviews_2(client, collection):
     search_result = client.search(
         collection_name=collection,
         query_vector=[0.0] * 384,
-        limit=20,
+        limit=100,
     )
 
     return search_result

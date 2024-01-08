@@ -44,17 +44,13 @@ upsert_qdrant(qdrant_client, collection_name, df)
 print(qdrant_client.count(collection_name=collection_name))
 
 '''
-'''
+
 #test
 collection_name = "frequent_answer"
-review = "Nos ha gustado mucho, hemos venido un grupo de amigas y la atención, la comida y el trato ha sido muy bueno. Marina la camarera ha sido muy amable y atenta, repetiremos seguro"
+review = "Nos ha gustado mucho, hemos venido un grupo de amigas y la atención, la comida y el trato ha sido muy " \
+         "bueno. Marina la camarera ha sido muy amable y atenta, repetiremos seguro"
 frequent_responses = get_frequent_answer(collection_name, review)
-
-print("frequent_responses:")
-print(frequent_responses)
-
-print("frequent_responses for:")
 
 for i, response in enumerate(frequent_responses, 1):
     print(f"{i}. {response}")
-'''
+
