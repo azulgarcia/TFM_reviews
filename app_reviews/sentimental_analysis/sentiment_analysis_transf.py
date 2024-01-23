@@ -9,7 +9,7 @@ def sentimental_analysis_to_csv():
 
     nlp = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
 
-    df = pd.read_csv('C:/Users/Azul/Desktop/TFM/TFM_reviews/get_reviews/data/reviews_tripadvisor.csv')
+    df = pd.read_csv('/app_reviews/get_reviews/data/reviews_tripadvisor.csv')
     reviews = df['body']
 
     # demoji

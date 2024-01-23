@@ -1,8 +1,8 @@
 import streamlit as st
-from other_functions import obtain_reviews_to_csv
-from openai_integration.openai_api import get_answer_review
-from vector_database.frequent_answers import get_frequent_answer
-from translate_answer.functions_translate import translate_text_en, translate_text_fr, translate_text_de
+from app_reviews.other_functions import obtain_reviews_to_csv
+from app_reviews.openai_integration.openai_api import get_answer_review
+from app_reviews.vector_database.frequent_answers import get_frequent_answer
+from app_reviews.translate_answer.functions_translate import translate_text_en, translate_text_fr, translate_text_de
 
 st.title("TripAdvisor Reviews")
 

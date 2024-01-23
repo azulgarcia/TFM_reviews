@@ -26,7 +26,7 @@ def get_answer_review(review):
 
 # test
 # read a single review
-df = pd.read_csv('C:/Users/Azul/Desktop/TFM/TFM_reviews/get_reviews/data/reviews_tripadvisor.csv')
+df = pd.read_csv('/app_reviews/get_reviews/data/reviews_tripadvisor.csv')
 single_review = df['body'][7]
 
 document = get_doc_from_text(single_review)

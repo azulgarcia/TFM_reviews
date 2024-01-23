@@ -1,6 +1,6 @@
 import streamlit as st
-from vector_database.search_by_features import get_reviews_by_features
-from vector_database.functions_database import get_all_reviews_2, connect_to_qdrant
+from app_reviews.vector_database.search_by_features import get_reviews_by_features
+from app_reviews.vector_database.functions_database import get_all_reviews_2, connect_to_qdrant
 
 st.set_page_config(page_title="Historical Reviews", page_icon="📊")
 

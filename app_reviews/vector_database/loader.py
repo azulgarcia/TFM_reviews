@@ -3,7 +3,7 @@ from sentence_transformers import SentenceTransformer
 import pandas as pd
 from qdrant_client import QdrantClient
 
-df = pd.read_csv("C:/Users/Azul/Desktop/TFM/TFM_reviews/sentimental_analysis/reviews_tripadvisor_with_sentiment.csv")
+df = pd.read_csv("/app_reviews/sentimental_analysis/reviews_tripadvisor_with_sentiment.csv")
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 

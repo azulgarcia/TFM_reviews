@@ -1,6 +1,7 @@
-from vector_database.functions_database import connect_to_qdrant, create_collection, upsert_qdrant
+from app_reviews.vector_database.functions_database import connect_to_qdrant
 from sentence_transformers import SentenceTransformer
-import pandas as pd
+
+
 def get_frequent_answer(collection_name, review):
     qdrant_client = connect_to_qdrant()
     model = SentenceTransformer("all-MiniLM-L6-v2")

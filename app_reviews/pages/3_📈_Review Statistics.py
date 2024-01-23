@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from vector_database.functions_database import get_all_reviews, connect_to_qdrant
+from app_reviews.vector_database.functions_database import get_all_reviews, connect_to_qdrant
 import altair as alt
 from datetime import datetime
 def main():

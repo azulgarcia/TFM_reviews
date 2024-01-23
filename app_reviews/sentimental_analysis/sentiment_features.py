@@ -1,6 +1,6 @@
 import pandas as pd
 import spacy
-from vector_database.functions_database import get_all_reviews, connect_to_qdrant
+from app_reviews.vector_database.functions_database import get_all_reviews, connect_to_qdrant
 def identify_features(text):
     nlp = spacy.load("es_core_news_sm")
 

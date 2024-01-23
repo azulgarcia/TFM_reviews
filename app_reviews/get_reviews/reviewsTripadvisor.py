@@ -5,9 +5,9 @@ from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from vector_database.functions_database import connect_to_qdrant, upsert_reviews, create_collection
-from sentimental_analysis.sentiment_analysis_transf import sentimental_analysis_to_df
-from sentimental_analysis.sentiment_features import identify_features
+from app_reviews.vector_database.functions_database import connect_to_qdrant, upsert_reviews, create_collection
+from app_reviews.sentimental_analysis.sentiment_analysis_transf import sentimental_analysis_to_df
+from app_reviews.sentimental_analysis.sentiment_features import identify_features
 def get_reviews_tripadvisor():
 
     url = "https://www.tripadvisor.es/Restaurant_Review-g187438-d25191960-Reviews-Santa_Monica_Restaurant_Sanchez_Pastor-Malaga_Costa_del_Sol_Province_of_Malaga_A.html"

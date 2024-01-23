@@ -1,6 +1,6 @@
 from sentence_transformers import SentenceTransformer
 import numpy as np
-from vector_database.functions_database import connect_to_qdrant, search_reviews
+from app_reviews.vector_database.functions_database import connect_to_qdrant, search_reviews
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
