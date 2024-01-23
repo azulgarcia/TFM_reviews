@@ -1,0 +1,9 @@
+*.pyc
+*.env
+.idea/
+*~
+.cache/
+.cached/
+temp/
+tmp/
+
