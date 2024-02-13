@@ -9,7 +9,6 @@ def translate_text_en(answer):
     translate_ids = model.generate(**input)
     translate_text = tokenizador.batch_decode(translate_ids, skip_special_tokens=True)[0]
 
-    # Imprimir la traducción
     print(f"Original text (spanish): {answer}")
     print(f"Translate (english): {translate_text}")
 
@@ -25,7 +24,6 @@ def translate_text_fr(answer):
     translate_ids = model.generate(**input)
     translate_text = tokenizador.batch_decode(translate_ids, skip_special_tokens=True)[0]
 
-    # Imprimir la traducción
     print(f"Original text (spanish): {answer}")
     print(f"Translate (french): {translate_text}")
 
@@ -40,14 +38,8 @@ def translate_text_de(answer):
     translate_ids = model.generate(**input)
     translate_text = tokenizador.batch_decode(translate_ids, skip_special_tokens=True)[0]
 
-    # Imprimir la traducción
     print(f"Original text (spanish): {answer}")
     print(f"Translate (german): {translate_text}")
 
     return translate_text
 
-#Test
-answer = "Lamentamos escuchar que tu experiencia no estuvo a la altura de tus expectativas. Valoramos tu retroalimentación y trabajaremos arduamente para mejorar."
-translate_text_en(answer)
-translate_text_fr(answer)
-translate_text_de(answer)

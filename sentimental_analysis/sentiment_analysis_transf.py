@@ -57,3 +57,5 @@ def sentimental_analysis_to_df(df):
         df.loc[i, 'sentiment_score'] = sentiment_score
 
     return df
+
+

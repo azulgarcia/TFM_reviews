@@ -1,28 +1,32 @@
+import pandas as pd
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
-import pandas as pd
 from sentence_transformers import SentenceTransformer
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
+COLLECTION = os.getenv('COLLECTION_NAME')
 def connect_to_qdrant():
 
     qdrant_client = QdrantClient(
-        url="https://0ec4558e-754e-49d3-8ac3-658d0a498955.us-east4-0.gcp.cloud.qdrant.io:6333",
-        api_key="0fhGp_s_vA1xP9TIdGGTRiAXnnGjeUdTKP6vtsYITcGehdYykGZ4pg",
+        url=os.getenv('URL_QDRANT'),
+        api_key=os.getenv('API_KEY_QDRANT')
     )
 
     return qdrant_client
 
-def create_collection(qdrant_client,collection_name):
+def create_collection(qdrant_client: object, collection_name: object) -> object:
     qdrant_client.create_collection(
         collection_name=collection_name,
         vectors_config=VectorParams(size=384, distance=Distance.COSINE),
     )
     return f"created collection: {collection_name}"
 
-def upsert_qdrant(qdrant_client,collection_name, df):
+def upsert_qdrant(qdrant_client, df):
     qdrant_client.upsert(
-        collection_name=collection_name,
+        collection_name=COLLECTION,
         points=[
             PointStruct(
                 id=idx,
@@ -35,7 +39,7 @@ def upsert_qdrant(qdrant_client,collection_name, df):
 
     return print("Number of answers", qdrant_client.count(collection_name=collection_name))
 
-def upsert_reviews(client, collection, df):
+def upsert_reviews(client, df):
 
     model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -45,7 +49,7 @@ def upsert_reviews(client, collection, df):
     payload = df.to_dict(orient="records")
 
     client.upsert(
-        collection_name=collection,
+        collection_name=COLLECTION,
         points=[
             PointStruct(
                 id=idx,
@@ -57,19 +61,19 @@ def upsert_reviews(client, collection, df):
     )
 
 
-def search_reviews(client, collection, query_vector):
+def search_reviews(client, query_vector):
 
     search_result = client.search(
-        collection_name=collection,
+        collection_name=COLLECTION,
         query_vector=query_vector,
     )
     return search_result
 
 
-def get_all_reviews(client, collection):
+def get_all_reviews(client):
 
     search_result = client.search(
-        collection_name=collection,
+        collection_name=COLLECTION,
         query_vector=[0.0] * 384,
         limit=100
     )

@@ -1,3 +1,4 @@
+import os
 import time
 import pandas as pd
 from selenium import webdriver
@@ -5,19 +6,21 @@ from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from app_reviews.vector_database.functions_database import connect_to_qdrant, upsert_reviews, create_collection
-from app_reviews.sentimental_analysis.sentiment_analysis_transf import sentimental_analysis_to_df
-from app_reviews.sentimental_analysis.sentiment_features import identify_features
+from vector_database.functions_database import connect_to_qdrant, upsert_reviews
+from sentimental_analysis.sentiment_analysis_transf import sentimental_analysis_to_df
+from sentimental_analysis.sentiment_features import identify_features
+from dotenv import load_dotenv
+load_dotenv()
+
+URL = os.getenv('URL_ESTABLISHMENT')
+
 def get_reviews_tripadvisor():
 
-    url = "https://www.tripadvisor.es/Restaurant_Review-g187438-d25191960-Reviews-Santa_Monica_Restaurant_Sanchez_Pastor-Malaga_Costa_del_Sol_Province_of_Malaga_A.html"
-
-    browser = webdriver.Chrome()
-    browser.get(url)
+    browser = webdriver.Edge()
+    browser.get(URL)
 
     time.sleep(10)
 
-    # close cookie banner
     try:
         cookie_banner = browser.find_element(By.ID, 'onetrust-banner-sdk')
         accept_button = cookie_banner.find_element(By.XPATH, "//button[@id='onetrust-accept-btn-handler']")
@@ -64,6 +67,8 @@ def get_reviews_tripadvisor():
             reviews_data["score"].append(rating)
             reviews_data["link"].append(link)
 
+            time.sleep(5)
+
         next_button = WebDriverWait(browser, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//a[@class='nav next ui_button primary']"))
         )
@@ -72,7 +77,6 @@ def get_reviews_tripadvisor():
         time.sleep(10)
 
     df = pd.DataFrame(reviews_data)
-    df.to_csv("data/reviews_tripadvisor_2.csv", index=False)
     browser.close()
 
     df_with_sentiment = sentimental_analysis_to_df(df)
@@ -82,10 +86,9 @@ def get_reviews_tripadvisor():
     df_reviews_final = pd.concat([df_with_sentiment, df_features], axis=1)
 
     client = connect_to_qdrant()
-    create_collection(client, "test")
 
-    upsert_reviews(client, "test", df_reviews_final)
+    upsert_reviews(client, df_reviews_final)
 
+    return df
 
-
-get_reviews_tripadvisor()
+print(get_reviews_tripadvisor())

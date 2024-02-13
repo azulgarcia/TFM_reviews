@@ -9,7 +9,7 @@ st.write("## Welcome to review management app! 👋")
 
 st.markdown(
     """
-    In this app you can manage Tripadvisor, Google Maps and The Fork reviews for your restaurant.
+    In this app you can manage Tripadvisor reviews for your restaurant.
     ### Get reviews:
     - You can get the reviews you want to manage and get frequent responses for each one.
     - You can also get personalized responses to your reviews.

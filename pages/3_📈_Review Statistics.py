@@ -1,17 +1,13 @@
 import pandas as pd
 import streamlit as st
-from app_reviews.vector_database.functions_database import get_all_reviews, connect_to_qdrant
 import altair as alt
 from datetime import datetime
+from vector_database.functions_database import get_all_reviews, connect_to_qdrant
+from sentimental_analysis.sentiment_features import get_sentiment_features
 def main():
-    st.markdown("""
-        TODO
-        - chek dates
-    """)
 
     qdrant_client = connect_to_qdrant()
-    collection_name = "reviews"
-    df_reviews = get_all_reviews(qdrant_client, collection_name)
+    df_reviews = get_all_reviews(qdrant_client)
 
     months = {
         "enero": 1, "febrero": 2, "marzo": 3, "abril": 4, "mayo": 5, "junio": 6,
@@ -28,6 +24,7 @@ def main():
     max_date = max(df_reviews['date'])
 
     coldate1, coldate2 = st.columns(2)
+
     with coldate1:
         selected_start_date = st.date_input("Select start date", min_value=min_date, max_value=max_date,
                                         value=min_date)
@@ -77,7 +74,6 @@ def main():
 
 
     # score graph
-    #st.subheader("Cantidad de Reseñas por Score")
     grouped_score = filtered_reviews.groupby('score').size().reset_index(name='count')
 
     score_range = range(1, 6)
@@ -94,7 +90,6 @@ def main():
 
     chart_1 = bars.configure_view(strokeOpacity=0).configure_axis(grid=False)
 
-    #st.altair_chart(chart, use_container_width=True)
 
     emoji_mapping = {'1 stars': '😠', '2 stars': '😟', '3 stars': '😐', '4 stars': '😊', '5 stars': '😃'}
 
@@ -118,27 +113,43 @@ def main():
 
     chart_2 = bars.configure_view(strokeOpacity=0).configure_axis(grid=False)
 
-    #st.subheader("Cantidad de Reseñas por Sentimiento")
-    #st.altair_chart(chart, use_container_width=True)
 
     col1, col2 = st.columns(2)
-    #col1.subheader("Cantidad de Reseñas por Score")
     col1.markdown("#### Reviews by score")
     col1.altair_chart(chart_1, use_container_width=True)
 
     col2.markdown("#### Reviews by sentiment")
     col2.altair_chart(chart_2, use_container_width=True)
 
-    df_date = filtered_reviews.groupby('date').size().reset_index(name='count')
 
-    chart = alt.Chart(df_date).mark_bar().encode(
-        x='date:T',
-        y='count:Q'
+    # historical reviews
+    df_date = filtered_reviews.groupby(['date', 'sentiment_label']).size().reset_index(name='count')
+
+    chart = alt.Chart(df_date).mark_line(point=True).encode(
+        x=alt.X('date:T', title='Date'),
+        y=alt.Y('count:Q', title='Number of reviews'),
+        color=alt.Color('sentiment_label:N', title='Sentiment')
     ).properties(
         title='Historical reviews'
     )
 
     st.altair_chart(chart, use_container_width=True)
+
+    # sentiment features
+    df_sentiments = get_sentiment_features(qdrant_client)
+
+    df_sentiments_long = df_sentiments.melt('sentiment_label', var_name='feature', value_name='sentiment_count')
+
+    chart_sentiment_feature = alt.Chart(df_sentiments_long).mark_bar().encode(
+        x=alt.X('feature', title='Feature'),
+        y=alt.Y('sentiment_count', title="Number of reviews"),
+        color=alt.Color('sentiment_label', title='Associated feeling')
+    ).properties(
+        title='Generalized feeling by characteristic'
+    )
+
+    st.altair_chart(chart_sentiment_feature, use_container_width=True)
+
 
 
 if __name__ == "__main__":

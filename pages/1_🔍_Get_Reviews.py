@@ -1,8 +1,9 @@
 import streamlit as st
-from app_reviews.other_functions import obtain_reviews_to_csv
-from app_reviews.openai_integration.openai_api import get_answer_review
-from app_reviews.vector_database.frequent_answers import get_frequent_answer
-from app_reviews.translate_answer.functions_translate import translate_text_en, translate_text_fr, translate_text_de
+from other_functions import obtain_reviews_to_csv
+from openai_integration.openai_api import get_answer_review
+from vector_database.frequent_answers import get_frequent_answer
+from translate_answer.functions_translate import translate_text_en, translate_text_fr, translate_text_de
+from get_reviews.reviews_tripadvisor import get_reviews_tripadvisor
 
 st.title("TripAdvisor Reviews")
 
@@ -18,7 +19,7 @@ if 'translate_review_answer' not in st.session_state:
 if not st.session_state.obtain_reviews_button_pressed:
     if st.button("Get Reviews"):
         st.session_state.obtain_reviews_button_pressed = True
-        st.session_state.df = obtain_reviews_to_csv()
+        st.session_state.df = get_reviews_tripadvisor()
         st.session_state.review_index = 0
         st.empty()
 
@@ -50,12 +51,12 @@ if 'df' in st.session_state:
         get_custom_answer_clicked = st.button(f"Get Custom Answer - Review {review_index + 1}")
         if get_custom_answer_clicked:
             response = get_answer_review(df['body'][review_index])
-            response = response.split("SOURCES:")[0].strip()
             st.write(f"**Suggested answer:** {response}")
 
         obtain_frequent_responses = st.checkbox(f"Get Frequently Answered - Review {review_index + 1}")
+
         if obtain_frequent_responses:
-            frequent_responses = get_frequent_answer("answer_2", df['body'][review_index])
+            frequent_responses = get_frequent_answer(df['body'][review_index])
 
             st.write("**Frequent answer:**")
             for i, response in enumerate(frequent_responses, 1):

@@ -1,4 +1,4 @@
-from app_reviews.vector_database.functions_database import connect_to_qdrant, get_all_reviews
+from vector_database.functions_database import connect_to_qdrant, get_all_reviews
 import pandas as pd
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import seaborn as sns

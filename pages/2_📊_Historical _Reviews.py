@@ -1,6 +1,6 @@
 import streamlit as st
-from app_reviews.vector_database.search_by_features import get_reviews_by_features
-from app_reviews.vector_database.functions_database import get_all_reviews_2, connect_to_qdrant
+from vector_database.search_by_features import get_reviews_by_features
+from vector_database.functions_database import get_all_reviews_2, connect_to_qdrant
 
 st.set_page_config(page_title="Historical Reviews", page_icon="📊")
 
@@ -13,7 +13,7 @@ if st.button("Search"):
 
     if selected_feature == "All":
         client = connect_to_qdrant()
-        hits = get_all_reviews_2(client, "reviews")
+        hits = get_all_reviews_2(client)
     else:
         hits = get_reviews_by_features(selected_feature)
 
