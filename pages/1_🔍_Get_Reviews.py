@@ -1,80 +1,25 @@
 import streamlit as st
-from other_functions import obtain_reviews_to_csv
-from openai_integration.openai_api import get_answer_review
-from vector_database.frequent_answers import get_frequent_answer
-from translate_answer.functions_translate import translate_text_en, translate_text_fr, translate_text_de
 from get_reviews.reviews_tripadvisor import get_reviews_tripadvisor
+import datetime
 
-st.title("TripAdvisor Reviews")
+def main():
+    st.title('Get TripAdvisor Reviews')
+    num_pages = st.number_input('Enter the number of pages:', min_value=1, max_value=10, step=1)
 
-if 'obtain_reviews_button_pressed' not in st.session_state:
-    st.session_state.obtain_reviews_button_pressed = False
+    if st.button('Get reviews'):
+        df = get_reviews_tripadvisor(num_pages)
+        st.success('The reviews have been downloaded correctly.')
 
-if 'review_index' not in st.session_state:
-    st.session_state.review_index = 0
+        current_datetime = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f"reviews_tripadvisor_{current_datetime}.csv"
 
-if 'translate_review_answer' not in st.session_state:
-    st.session_state.translate_review_answer = False
-
-if not st.session_state.obtain_reviews_button_pressed:
-    if st.button("Get Reviews"):
-        st.session_state.obtain_reviews_button_pressed = True
-        st.session_state.df = get_reviews_tripadvisor()
-        st.session_state.review_index = 0
-        st.empty()
-
-if 'df' in st.session_state:
-    df = st.session_state.df
-
-    for review_index in range(len(df)):
-        st.markdown(
-            """
-            <div style="border: 2px solid #e5e5e5; border-radius: 5px; padding: 10px;">
-                <p><strong>Title:</strong> {title}</p>
-                <p><strong>Author:</strong> {author}</p>
-                <p><strong>Visit date:</strong> {date}</p>
-                <p><strong>Score:</strong> {score}</p>
-                <p><strong>Review:</strong> {body}</p>
-                <p><a href="{link}" target="_blank">Go to the review</a></p>
-            </div>
-            """.format(
-                title=df['title'][review_index],
-                author=df['author'][review_index],
-                date=df['date'][review_index],
-                score=df['score'][review_index],
-                body=df['body'][review_index],
-                link=df['link'][review_index]
-            ),
-            unsafe_allow_html=True
+        csv = df.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Download Reviews CSV",
+            data=csv,
+            file_name=filename,
+            mime="text/csv",
         )
 
-        get_custom_answer_clicked = st.button(f"Get Custom Answer - Review {review_index + 1}")
-        if get_custom_answer_clicked:
-            response = get_answer_review(df['body'][review_index])
-            st.write(f"**Suggested answer:** {response}")
-
-        obtain_frequent_responses = st.checkbox(f"Get Frequently Answered - Review {review_index + 1}")
-
-        if obtain_frequent_responses:
-            frequent_responses = get_frequent_answer(df['body'][review_index])
-
-            st.write("**Frequent answer:**")
-            for i, response in enumerate(frequent_responses, 1):
-                st.markdown(f"{i}. {response}", unsafe_allow_html=True)
-
-                checkboxes = st.columns(3)
-                translate_button_clicked_en = checkboxes[0].checkbox(f"Translate english {i}")
-                translate_button_clicked_fr = checkboxes[1].checkbox(f"Translate french {i}")
-                translate_button_clicked_de = checkboxes[2].checkbox(f"Translate german {i}")
-
-                if translate_button_clicked_en:
-                    translated_text = translate_text_en(response)
-                    st.markdown(f"**English translation:** {translated_text}")
-
-                if translate_button_clicked_fr:
-                    translated_text = translate_text_fr(response)
-                    st.markdown(f"**French translation:** {translated_text}")
-
-                if translate_button_clicked_de:
-                    translated_text = translate_text_de(response)
-                    st.markdown(f"**German translation:** {translated_text}")
+if __name__ == "__main__":
+    main()

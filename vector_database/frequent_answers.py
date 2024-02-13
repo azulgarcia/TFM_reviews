@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-COLLECTION = os.getenv('COLLECTION_NAME')
+COLLECTION = os.getenv('COLLECTION_FREQUENT_ANSWER')
 def get_frequent_answer(review):
     qdrant_client = connect_to_qdrant()
     model = SentenceTransformer("all-MiniLM-L6-v2")

@@ -37,7 +37,7 @@ def upsert_qdrant(qdrant_client, df):
         ],
     )
 
-    return print("Number of answers", qdrant_client.count(collection_name=collection_name))
+    return print("Number of answers", qdrant_client.count(collection_name=COLLECTION))
 
 def upsert_reviews(client, df):
 
@@ -88,9 +88,9 @@ def get_all_reviews(client):
 
     return df
 
-def get_all_reviews_2(client, collection):
+def get_all_reviews_2(client):
     search_result = client.search(
-        collection_name=collection,
+        collection_name=COLLECTION,
         query_vector=[0.0] * 384,
         limit=100,
     )

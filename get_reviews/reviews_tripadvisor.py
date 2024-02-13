@@ -6,15 +6,13 @@ from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from vector_database.functions_database import connect_to_qdrant, upsert_reviews
-from sentimental_analysis.sentiment_analysis_transf import sentimental_analysis_to_df
-from sentimental_analysis.sentiment_features import identify_features
 from dotenv import load_dotenv
+
 load_dotenv()
 
 URL = os.getenv('URL_ESTABLISHMENT')
 
-def get_reviews_tripadvisor():
+def get_reviews_tripadvisor(num_pages):
 
     browser = webdriver.Edge()
     browser.get(URL)
@@ -28,12 +26,10 @@ def get_reviews_tripadvisor():
     except NoSuchElementException:
         pass
 
-    num_pages = 1
 
     reviews_data = {"page_number": [], "date": [], "title": [], "body": [], "author": [], "score": [], "link": []}
 
-    page_num = 0
-
+    page_num = num_pages
 
     for _ in range(num_pages):
         reviews = WebDriverWait(browser, 10).until(
@@ -67,7 +63,7 @@ def get_reviews_tripadvisor():
             reviews_data["score"].append(rating)
             reviews_data["link"].append(link)
 
-            time.sleep(5)
+            time.sleep(3)
 
         next_button = WebDriverWait(browser, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//a[@class='nav next ui_button primary']"))
@@ -79,16 +75,5 @@ def get_reviews_tripadvisor():
     df = pd.DataFrame(reviews_data)
     browser.close()
 
-    df_with_sentiment = sentimental_analysis_to_df(df)
-
-    df_features = df_with_sentiment['body'].apply(identify_features).apply(pd.Series)
-
-    df_reviews_final = pd.concat([df_with_sentiment, df_features], axis=1)
-
-    client = connect_to_qdrant()
-
-    upsert_reviews(client, df_reviews_final)
-
     return df
 
-print(get_reviews_tripadvisor())

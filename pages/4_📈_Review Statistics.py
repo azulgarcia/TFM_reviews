@@ -3,9 +3,7 @@ import streamlit as st
 import altair as alt
 from datetime import datetime
 from vector_database.functions_database import get_all_reviews, connect_to_qdrant
-from sentimental_analysis.sentiment_features import get_sentiment_features
 def main():
-
     qdrant_client = connect_to_qdrant()
     df_reviews = get_all_reviews(qdrant_client)
 
@@ -136,7 +134,11 @@ def main():
     st.altair_chart(chart, use_container_width=True)
 
     # sentiment features
-    df_sentiments = get_sentiment_features(qdrant_client)
+    df_sentiments = filtered_reviews.groupby('sentiment_label').agg({
+        'comida': 'sum',
+        'servicio': 'sum',
+        'precio': 'sum'
+    }).reset_index()
 
     df_sentiments_long = df_sentiments.melt('sentiment_label', var_name='feature', value_name='sentiment_count')
 

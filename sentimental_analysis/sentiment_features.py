@@ -1,8 +1,9 @@
 import pandas as pd
 import spacy
 import os
-from vector_database.functions_database import get_all_reviews
+from vector_database.functions_database import get_all_reviews, connect_to_qdrant
 from dotenv import load_dotenv
+
 load_dotenv()
 
 COLLECTION = os.getenv('COLLECTION_NAME')
@@ -28,12 +29,11 @@ def identify_features(text):
     return presence_features
 
 def get_sentiment_features(client):
-    df = get_all_reviews(client, COLLECTION)
+    df = get_all_reviews(client)
     df_features = df['body'].apply(identify_features).apply(pd.Series)
 
     df_reviews = pd.concat([df, df_features], axis=1)
 
-    print(df_reviews)
     df_sentiments = df_reviews.groupby('sentiment_label').agg({
         'comida': 'sum',
         'servicio': 'sum',
@@ -41,3 +41,4 @@ def get_sentiment_features(client):
     }).reset_index()
 
     return df_sentiments
+
