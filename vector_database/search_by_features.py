@@ -4,8 +4,8 @@ from vector_database.functions_database import connect_to_qdrant, search_reviews
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
-def get_reviews_by_features(feature):
 
+def get_reviews_by_features(feature):
     if feature == "Food":
         feature_keywords = ["comida", "menú", "plato", "sabor", "delicioso"]
     elif feature == "Service":
@@ -23,4 +23,3 @@ def get_reviews_by_features(feature):
     hits = search_reviews(client, embeddings_characteristics)
 
     return hits
-

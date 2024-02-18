@@ -3,6 +3,8 @@ import streamlit as st
 import altair as alt
 from datetime import datetime
 from vector_database.functions_database import get_all_reviews, connect_to_qdrant
+
+
 def main():
     qdrant_client = connect_to_qdrant()
     df_reviews = get_all_reviews(qdrant_client)
@@ -25,10 +27,10 @@ def main():
 
     with coldate1:
         selected_start_date = st.date_input("Select start date", min_value=min_date, max_value=max_date,
-                                        value=min_date)
+                                            value=min_date)
     with coldate2:
         selected_end_date = st.date_input("Select end date", min_value=selected_start_date, max_value=max_date,
-                                      value=max_date)
+                                          value=max_date)
 
     selected_start_date = pd.Timestamp(selected_start_date)
     selected_end_date = pd.Timestamp(selected_end_date)
@@ -70,7 +72,6 @@ def main():
     st.markdown("")
     st.success(f"###### Customer satisfaction: {average_score:.2f}%")
 
-
     # score graph
     grouped_score = filtered_reviews.groupby('score').size().reset_index(name='count')
 
@@ -87,7 +88,6 @@ def main():
     )
 
     chart_1 = bars.configure_view(strokeOpacity=0).configure_axis(grid=False)
-
 
     emoji_mapping = {'1 stars': '😠', '2 stars': '😟', '3 stars': '😐', '4 stars': '😊', '5 stars': '😃'}
 
@@ -111,14 +111,12 @@ def main():
 
     chart_2 = bars.configure_view(strokeOpacity=0).configure_axis(grid=False)
 
-
     col1, col2 = st.columns(2)
     col1.markdown("#### Reviews by score")
     col1.altair_chart(chart_1, use_container_width=True)
 
     col2.markdown("#### Reviews by sentiment")
     col2.altair_chart(chart_2, use_container_width=True)
-
 
     # historical reviews
     df_date = filtered_reviews.groupby(['date', 'sentiment_label']).size().reset_index(name='count')
@@ -151,7 +149,6 @@ def main():
     )
 
     st.altair_chart(chart_sentiment_feature, use_container_width=True)
-
 
 
 if __name__ == "__main__":

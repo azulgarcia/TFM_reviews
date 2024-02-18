@@ -14,7 +14,7 @@ URL = os.getenv('URL_ESTABLISHMENT')
 
 def get_reviews_tripadvisor(num_pages):
 
-    browser = webdriver.Edge()
+    browser = webdriver.Firefox()
     browser.get(URL)
 
     time.sleep(10)
@@ -29,13 +29,23 @@ def get_reviews_tripadvisor(num_pages):
 
     reviews_data = {"page_number": [], "date": [], "title": [], "body": [], "author": [], "score": [], "link": []}
 
-    page_num = num_pages
 
-    for _ in range(num_pages):
+
+    for page in range(1, num_pages+1):
+        try:
+            read_more_button = WebDriverWait(browser, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//span[@class='taLnk ulBlueLinks']"))
+            )
+            read_more_button.click()
+            time.sleep(3)  # Esperar un segundo después de hacer clic en "Ver más"
+        except NoSuchElementException:
+            pass
+
         reviews = WebDriverWait(browser, 10).until(
             EC.presence_of_all_elements_located((By.CLASS_NAME, 'review-container'))
         )
-        page_num += 1
+
+
         for review in reviews:
             date = review.find_element(By.XPATH, "//div[@class='prw_rup prw_reviews_stay_date_hsx']")
             date = date.text.split(':')[-1].strip()
@@ -55,7 +65,7 @@ def get_reviews_tripadvisor(num_pages):
             link_element = review.find_element(By.CLASS_NAME, 'quote')
             link = link_element.find_element(By.CLASS_NAME, 'title').get_attribute('href')
 
-            reviews_data["page_number"].append(page_num)
+            reviews_data["page_number"].append(page)
             reviews_data["date"].append(date)
             reviews_data["title"].append(title)
             reviews_data["body"].append(body)
@@ -76,4 +86,3 @@ def get_reviews_tripadvisor(num_pages):
     browser.close()
 
     return df
-

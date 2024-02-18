@@ -13,6 +13,7 @@ URL_QDRANT = os.getenv('URL_QDRANT')
 API_KEY_QDRANT = os.getenv('API_KEY_QDRANT')
 FILE_NAME = os.getenv('FILE_FREQUENT_ANSWER')
 
+
 def main():
     ##############################################################################################################
     # Create review collection in Qdrant Cloud
@@ -74,6 +75,6 @@ def main():
     except:
         print("collection could not be created.")
 
+
 if __name__ == "__main__":
     main()
-

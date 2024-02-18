@@ -8,14 +8,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 COLLECTION = os.getenv('COLLECTION_NAME')
-def connect_to_qdrant():
 
+
+def connect_to_qdrant():
     qdrant_client = QdrantClient(
         url=os.getenv('URL_QDRANT'),
         api_key=os.getenv('API_KEY_QDRANT')
     )
 
     return qdrant_client
+
 
 def create_collection(qdrant_client: object, collection_name: object) -> object:
     qdrant_client.create_collection(
@@ -24,23 +26,8 @@ def create_collection(qdrant_client: object, collection_name: object) -> object:
     )
     return f"created collection: {collection_name}"
 
-def upsert_qdrant(qdrant_client, df):
-    qdrant_client.upsert(
-        collection_name=COLLECTION,
-        points=[
-            PointStruct(
-                id=idx,
-                vector=row["encoded"],
-                payload={"answer": (row["answer"])},
-            )
-            for idx, row in df.iterrows()
-        ],
-    )
-
-    return print("Number of answers", qdrant_client.count(collection_name=COLLECTION))
 
 def upsert_reviews(client, df):
-
     model = SentenceTransformer("all-MiniLM-L6-v2")
 
     reviews = df['body'].tolist()
@@ -62,7 +49,6 @@ def upsert_reviews(client, df):
 
 
 def search_reviews(client, query_vector):
-
     search_result = client.search(
         collection_name=COLLECTION,
         query_vector=query_vector,
@@ -71,7 +57,6 @@ def search_reviews(client, query_vector):
 
 
 def get_all_reviews(client):
-
     search_result = client.search(
         collection_name=COLLECTION,
         query_vector=[0.0] * 384,
@@ -87,6 +72,7 @@ def get_all_reviews(client):
     df = pd.DataFrame(metadata)
 
     return df
+
 
 def get_all_reviews_2(client):
     search_result = client.search(

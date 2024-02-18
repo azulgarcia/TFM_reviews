@@ -2,6 +2,7 @@ from transformers import pipeline, AutoModelForSequenceClassification, AutoToken
 import pandas as pd
 import demoji
 
+
 def sentimental_analysis_to_csv():
     model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
     model = AutoModelForSequenceClassification.from_pretrained(model_name)
@@ -57,5 +58,3 @@ def sentimental_analysis_to_df(df):
         df.loc[i, 'sentiment_score'] = sentiment_score
 
     return df
-
-

@@ -29,3 +29,4 @@ def get_answer_review(review):
 
     return response.choices[0]["message"]["content"]
 
+

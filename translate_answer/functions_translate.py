@@ -1,5 +1,6 @@
 from transformers import MarianMTModel, MarianTokenizer
 
+
 def translate_text_en(answer):
     model_name = "Helsinki-NLP/opus-mt-es-en"
     model = MarianMTModel.from_pretrained(model_name)
@@ -29,6 +30,7 @@ def translate_text_fr(answer):
 
     return translate_text
 
+
 def translate_text_de(answer):
     model_name = "Helsinki-NLP/opus-mt-es-de"
     model = MarianMTModel.from_pretrained(model_name)
@@ -42,4 +44,3 @@ def translate_text_de(answer):
     print(f"Translate (german): {translate_text}")
 
     return translate_text
-

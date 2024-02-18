@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 COLLECTION = os.getenv('COLLECTION_NAME')
+
+
 def identify_features(text):
     nlp = spacy.load("es_core_news_sm")
 
@@ -28,6 +30,7 @@ def identify_features(text):
 
     return presence_features
 
+
 def get_sentiment_features(client):
     df = get_all_reviews(client)
     df_features = df['body'].apply(identify_features).apply(pd.Series)
@@ -41,4 +44,3 @@ def get_sentiment_features(client):
     }).reset_index()
 
     return df_sentiments
-

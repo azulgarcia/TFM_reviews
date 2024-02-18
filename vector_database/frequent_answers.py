@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 COLLECTION = os.getenv('COLLECTION_FREQUENT_ANSWER')
+
+
 def get_frequent_answer(review):
     qdrant_client = connect_to_qdrant()
     model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -26,4 +28,3 @@ def get_frequent_answer(review):
     frequent_responses = [hit.payload['answer'] for hit in hits if 'answer' in hit.payload]
 
     return frequent_responses
-
